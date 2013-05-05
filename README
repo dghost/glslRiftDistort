@@ -9,6 +9,7 @@ barrel.frag		: Fragment shader that performs barrel distortion.
 barrel_left.geom	: Geometry shader for the left half of the screen.
 barrel_right.geom	: Geometry shader for the right half of the screen.
 barrel.geom		: Experimental geometry shader that does both quads in a single call.
+empty.shdr		: Empty shader to use as the vertex shader.
 
 This assumes that the source texture follows normal OpenGL texture coordinate conventions and 
 that (0,0) is the bottom left of the screen and (1,1) is the upper right. It works by
@@ -23,6 +24,11 @@ Shaders have been tested with OpenGL 3.3, but should be compatible with OpenGL 3
 modifications. Earlier versions of OpenGL won't be compatible due to the lack of geometry 
 shaders, but if you calculate the ScreenCenter and LensCenter values yourself it would be
 easy to modify it for use with regular quads.
+
+In order for the shader to compile correctly it needs to have a vertex shader attached to it. I
+have included the file empty.shdr to be used for that purpose. It's really nothing special, but
+it's there to help.
+
 
 To use (minimal):
 -Bind the source texture to uniform location warpTexture
