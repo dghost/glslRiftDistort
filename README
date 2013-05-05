@@ -25,9 +25,9 @@ modifications. Earlier versions of OpenGL won't be compatible due to the lack of
 shaders, but if you calculate the ScreenCenter and LensCenter values yourself it would be
 easy to modify it for use with regular quads.
 
-In order for the shader to compile correctly it needs to have a vertex shader attached to it. I
-have included the file empty.shdr to be used for that purpose. It's really nothing special, but
-it's there to help.
+In order for the shader to compile correctly it needs to have a vertex shader attached. I
+have included the file empty.shdr to be used for that purpose. It's really nothing special,
+but it's there if you need it.
 
 
 To use (minimal):
