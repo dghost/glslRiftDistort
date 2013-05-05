@@ -8,6 +8,7 @@ Files included:
 barrel.frag		: Fragment shader that performs barrel distortion.
 barrel_left.geom	: Geometry shader for the left half of the screen.
 barrel_right.geom	: Geometry shader for the right half of the screen.
+barrel.geom		: Experimental geometry shader that does both quads in a single call.
 
 This assumes that the source texture follows normal OpenGL texture coordinate conventions and 
 that (0,0) is the bottom left of the screen and (1,1) is the upper right. It works by
@@ -49,38 +50,67 @@ The geometry shader itself generates the LensCenter and ScreenCenter values. At 
 	rebinding shaders. Again, the point of this was largely to follow Rift SDK conventions
 	while using modern OpenGL.
 
-Example demonstrating minimal setup usage:
+Example demonstrating minimal setup using per-eye shaders:
 
 void cRenderer::stereoWarp(GLuint outFBO, GLuint inTexture)
 {
 	glBindVertexArray(_nullVAO);
 	int tLoc = 0;
-	glViewport(0,0,_stereo.width,_stereo.height);
+	glViewport(0,0,_width,_height);
 
 	glBindFramebuffer(GL_FRAMEBUFFER,outFBO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,inTexture);
 
 	/* bind the shader for the left eye */
-	_stereo.left.bind();
-	tLoc = _stereo.left.uniformLocation("warpTexture");
+	glUseProgram(_leftShaderID);
+	tLoc =  glGetUniformLocation(_leftShaderID,"warpTexture");
 	glUniform1i(tLoc,0);
 	
 	/* set uniforms here */
-//	tLoc = _stereo.left.uniformLocation("in_DistortionOffset");
+//	tLoc =  glGetUniformLocation(_leftShaderID,"in_DistortionOffset");
 //	glUniform1f(tLoc,0.1453f);
 
 	glDrawArrays(GL_POINTS, 0, 1);
 
 	/* bind the shader for the right eye */
-	_stereo.right.bind();
-	tLoc = _stereo.right.uniformLocation("warpTexture");
+	glUseProgram(_rightShaderID);
+	tLoc =  glGetUniformLocation(_rightShaderID,"warpTexture");
 	glUniform1i(tLoc,0);
 	
 	/* set uniforms here */
-//	tLoc = _stereo.right.uniformLocation("in_DistortionOffset");
+//	tLoc =  glGetUniformLocation(_rightShaderID,"in_DistortionOffset");
 //	glUniform1f(tLoc,0.1453f);
 	
+	glDrawArrays(GL_POINTS, 0, 1);
+
+	glBindTexture(GL_TEXTURE_2D,0);
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	glBindVertexArray(0);
+}
+
+
+Example demonstrating minimal setup using experimental single pass shader:
+
+void cRenderer::stereoWarp(GLuint outFBO, GLuint inTexture)
+{
+	glBindVertexArray(_nullVAO);
+	int tLoc = 0;
+	glViewport(0,0,_width,_height);
+
+	glBindFramebuffer(GL_FRAMEBUFFER,outFBO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,inTexture);
+
+	/* bind the shader for the left eye */
+	glUseProgram(_warpShaderID);
+	tLoc =  glGetUniformLocation(_warpShaderID,"warpTexture");
+	glUniform1i(tLoc,0);
+	
+	/* set uniforms here */
+//	tLoc =  glGetUniformLocation(_warpShaderID,"in_DistortionOffset");
+//	glUniform1f(tLoc,0.1453f);
+
 	glDrawArrays(GL_POINTS, 0, 1);
 
 	glBindTexture(GL_TEXTURE_2D,0);
