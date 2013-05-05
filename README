@@ -6,17 +6,17 @@ As always, no warranties are provided.
 
 Files included:
 barrel.frag		: Fragment shader that performs barrel distortion.
-barrel_left.geom	: Geometry shader that sets up a half-screen quad for the left half of the screen.
-barrel_right.geom	: Geometry shader that sets up a half-screen quad for the right half of the screen.
+barrel_left.geom	: Geometry shader for the left half of the screen.
+barrel_right.geom	: Geometry shader for the right half of the screen.
 
 This assumes that the source texture follows normal OpenGL texture coordinate conventions and 
-that (0,0) is the bottom left of the screen and (1,1) is the upper right. It works by generating
-a quad with the texture coordinates inverted along the Y-axis and then re-inverting it after the
-calculation is complete. Because the distortion should be symmetric along the Y-axis it is actually
- quite likely that this step could be eliminated, but I kept it in for completeness and to maintain
- conventions with the Rift SDK. There are other optimizations that could be performed too (e.g., the
- distortion calculations for the w term could be eliminated as it is currently unused) but I will
- leave that up to you to perform.
+that (0,0) is the bottom left of the screen and (1,1) is the upper right. It works by
+generating a quad with the texture coordinates inverted along the Y-axis and then re-inverting
+it after the calculation is complete. Because the distortion should be symmetric along the
+Y-axis it is actually quite likely that this step could be eliminated, but I kept it in for
+completeness and to maintain conventions with the Rift SDK. There are other optimizations that
+could be performed too (e.g., the distortion calculations for the w term could be eliminated
+as it is currently unused) but I will leave that up to you to perform.
 
 To use:
 
@@ -25,18 +25,23 @@ To use:
 -Issue a command like glDrawArrays(GL_POINTS, 0, 1) with an empty VAO bound.
 
 Optionally:
--Bind parameters to in_ScaleIn, in_Scale, in_HmdWarpParam, and in_DistortionOffset. These have default
-values that match the values that the current SDK will provide (v0.2.1) but you should still calculate
-these separately as they will likely change in future versions of the SDK.
+-Bind parameters to in_ScaleIn, in_Scale, in_HmdWarpParam, and in_DistortionOffset. These have 
+	default values that match the values that the current SDK will provide (v0.2.1) but you
+	should still calculate these separately as they will likely change in future versions of 
+	the SDK.
 
 Explanation:
 in_ScaleIn matches the variable ScaleIn referenced by the Rift SDK docs.
-in_Scale matches the variable Scale referenced by the Rift SDK docs. If you want to apply a texture scaling value you should add it to this.
-in_HmdWarpParam matches the variable HmdWarpParam referenced by the Rift SDK docs. It is equivalent to the DistortionK[] value.
-in_DistortionOffset matches the viewport shift value that is mentioned in the Rift SDK. I don't believe there is an explicit variable used to reference this.
+in_Scale matches the variable Scale referenced by the Rift SDK docs. If you want to apply a 
+	texture scaling value you should add it to this.
+in_HmdWarpParam matches the variable HmdWarpParam referenced by the Rift SDK docs. It is 
+	equivalent to the DistortionK[] value.
+in_DistortionOffset matches the viewport shift value that is mentioned in the Rift SDK. I don't
+	believe there is an explicit variable used to reference this.
 
-The geometry shader itself generates the LensCenter and ScreenCenter offsets. At a later date I might update this to support setting
-center points for the lenses later, or alternatively making a common geometry shader that can be used to draw both without rebinding shaders.
+The geometry shader itself generates the LensCenter and ScreenCenter offsets. At a later date
+	I might update this to support setting center points for the lenses later, or alternatively
+	make a common geometry shader that can be used to draw both without rebinding shaders.
 
 Example demonstrating minimal setup usage:
 
