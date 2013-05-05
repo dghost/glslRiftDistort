@@ -13,6 +13,7 @@ void main()
 {
     ScreenCenter = vec2(0.75,0.5);
 	LensCenter = vec2(0.75 - in_DistortionOffset * 0.25, 0.5);
+	
     gl_Position = vec4( 1.0, 1.0, 0.0, 1.0 );
     warpTexCoords = vec2( 1.0, 0.0 );
     EmitVertex();
