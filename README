@@ -1,7 +1,7 @@
 OpenGL Barrel Distortion Shader for the Oculus Rift
 
 Based on the basic version provided by Oculus, Inc. All copyright, etc. belongs to them.
-Ported/debugged by Luke Groeninger
+Ported/debugged by Luke Groeninger.
 As always, no warranties are provided.
 
 Files included:
@@ -20,18 +20,19 @@ as it is currently unused) but I will leave that up to you to perform.
 
 Shaders have been tested with OpenGL 3.3, but should be compatible with OpenGL 3.2 with minor
 modifications. Earlier versions of OpenGL won't be compatible due to the lack of geometry 
-shaders without calculating the ScreenCenter and LensCenter uniforms by hand.
+shaders, but if you calculate the ScreenCenter and LensCenter values yourself it would be
+easy to modify it for use with regular quads.
 
-To use:
+To use (minimal):
 -Bind the source texture to uniform location warpTexture
 -Bind the output framebuffer with the destination at GL_COLOR_ATTACHMENT0.
 -Issue a command like glDrawArrays(GL_POINTS, 0, 1) with an empty VAO bound.
 
 Optionally:
--Bind parameters to in_ScaleIn, in_Scale, in_HmdWarpParam, and in_DistortionOffset. These have 
+-Bind values to in_ScaleIn, in_Scale, in_HmdWarpParam, and in_DistortionOffset. These have 
 	default values that match the values that the current SDK will provide (v0.2.1) but
 	you should still calculate these separately as they will likely change in future 
-	versions of the SDK.
+	versions of the SDK. 
 
 Explanation:
 -in_ScaleIn matches the variable ScaleIn referenced by the Rift SDK docs.
@@ -42,10 +43,11 @@ Explanation:
 -in_DistortionOffset matches the viewport shift value that is mentioned in the Rift SDK. I
 	don't believe there is an explicit variable used to reference this.
 
-The geometry shader itself generates the LensCenter and ScreenCenter offsets. At a later date
-	I might update this to support setting center points for the lenses later, or 
+The geometry shader itself generates the LensCenter and ScreenCenter values. At a later date
+	I might update this later to support setting center points for the lenses, or 
 	alternatively make a common geometry shader that can be used to draw both without 
-	rebinding shaders.
+	rebinding shaders. Again, the point of this was largely to follow Rift SDK conventions
+	while using modern OpenGL.
 
 Example demonstrating minimal setup usage:
 
