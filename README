@@ -18,8 +18,11 @@ completeness and to maintain conventions with the Rift SDK. There are other opti
 could be performed too (e.g., the distortion calculations for the w term could be eliminated
 as it is currently unused) but I will leave that up to you to perform.
 
-To use:
+Shaders have been tested with OpenGL 3.3, but should be compatible with OpenGL 3.2 with minor
+modifications. Earlier versions of OpenGL won't be compatible due to the lack of geometry 
+shaders without calculating the ScreenCenter and LensCenter uniforms by hand.
 
+To use:
 -Bind the source texture to uniform location warpTexture
 -Bind the output framebuffer with the destination at GL_COLOR_ATTACHMENT0.
 -Issue a command like glDrawArrays(GL_POINTS, 0, 1) with an empty VAO bound.
