@@ -20,10 +20,11 @@ completeness and to maintain conventions with the Rift SDK. There are other opti
 could be performed too (e.g., the distortion calculations for the w term could be eliminated
 as it is currently unused) but I will leave that up to you to perform.
 
-Shaders have been tested with OpenGL 3.3, but should be compatible with OpenGL 3.2 with minor
-modifications. Earlier versions of OpenGL won't be compatible due to the lack of geometry 
-shaders, but if you calculate the ScreenCenter and LensCenter values yourself it would be
-easy to modify it for use with regular quads.
+The shaders require OpenGL 3.2 / GLSL 1.50+. Earlier versions of OpenGL won't be compatible 
+due to the lack of geometry shaders, but if you calculate the ScreenCenter and LensCenter 
+values yourself it would be easy to modify it for use with regular quads. It was tested on
+Nvidia hardware (which itself counts for next to nothing, as their shader compiler is the
+most lax), but it should work fine with other hardware.
 
 In order for the shader to compile correctly it needs to have a vertex shader attached. I
 have included the file empty.shdr to be used for that purpose. It's really nothing special,
@@ -31,24 +32,27 @@ but it's there if you need it.
 
 
 To use (minimal):
--Bind the source texture to uniform location warpTexture
--Bind the output framebuffer with the destination at GL_COLOR_ATTACHMENT0.
+-Bind the source texture to uniform location warpTexture.
+-Bind the output framebuffer.
 -Issue a command like glDrawArrays(GL_POINTS, 0, 1) with an empty VAO bound.
 
 Optionally:
--Bind values to in_ScaleIn, in_Scale, in_HmdWarpParam, and in_DistortionOffset. These have 
+-Bind values to ScaleIn, Scale, HmdWarpParam, and DistortionOffset. These have 
 	default values that match the values that the current SDK will provide (v0.2.1) but
 	you should still calculate these separately as they will likely change in future 
 	versions of the SDK. 
 
 Explanation:
--in_ScaleIn matches the variable ScaleIn referenced by the Rift SDK docs.
--in_Scale matches the variable Scale referenced by the Rift SDK docs. If you want to apply a 
-	texture scaling value you should add it to this.
--in_HmdWarpParam matches the variable HmdWarpParam referenced by the Rift SDK docs. It is 
-	equivalent to the DistortionK[] value.
--in_DistortionOffset matches the viewport shift value that is mentioned in the Rift SDK. I
-	don't believe there is an explicit variable used to reference this.
+-ScaleIn matches the variable ScaleIn referenced by the Rift SDK docs. The default value
+	is (4.0,2.0).
+-Scale matches the variable Scale referenced by the Rift SDK docs. If you want to apply a 
+	texture scaling value you should add it to this. The default value is (0.25,0.5).
+-HmdWarpParam matches the variable HmdWarpParam referenced by the Rift SDK docs. It is 
+	equivalent to the DistortionK[] value. The default values are (1.0,0.22,0.24,0.0).
+-DistortionOffset matches the viewport shift value that is mentioned in the Rift SDK. I
+	don't believe there is an explicit variable used to reference this within the SDK, but
+	it instead has to be calculated using directions. The default value is 0.151976.
+
 
 The geometry shader itself generates the LensCenter and ScreenCenter values. At a later date
 	I might update this later to support setting center points for the lenses, or 
@@ -70,22 +74,22 @@ void cRenderer::stereoWarp(GLuint outFBO, GLuint inTexture)
 
 	/* bind the shader for the left eye */
 	glUseProgram(_leftShaderID);
-	tLoc =  glGetUniformLocation(_leftShaderID,"warpTexture");
+	tLoc =  glGetUniformLocation(_leftShaderID,"Texture");
 	glUniform1i(tLoc,0);
 	
 	/* set uniforms here */
-//	tLoc =  glGetUniformLocation(_leftShaderID,"in_DistortionOffset");
+//	tLoc =  glGetUniformLocation(_leftShaderID,"DistortionOffset");
 //	glUniform1f(tLoc,0.1453f);
 
 	glDrawArrays(GL_POINTS, 0, 1);
 
 	/* bind the shader for the right eye */
 	glUseProgram(_rightShaderID);
-	tLoc =  glGetUniformLocation(_rightShaderID,"warpTexture");
+	tLoc =  glGetUniformLocation(_rightShaderID,"Texture");
 	glUniform1i(tLoc,0);
 	
 	/* set uniforms here */
-//	tLoc =  glGetUniformLocation(_rightShaderID,"in_DistortionOffset");
+//	tLoc =  glGetUniformLocation(_rightShaderID,"DistortionOffset");
 //	glUniform1f(tLoc,0.1453f);
 	
 	glDrawArrays(GL_POINTS, 0, 1);
@@ -108,13 +112,13 @@ void cRenderer::stereoWarp(GLuint outFBO, GLuint inTexture)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,inTexture);
 
-	/* bind the shader for the left eye */
+	/* bind the shader for entire screen */
 	glUseProgram(_warpShaderID);
-	tLoc =  glGetUniformLocation(_warpShaderID,"warpTexture");
+	tLoc =  glGetUniformLocation(_warpShaderID,"Texture");
 	glUniform1i(tLoc,0);
 	
 	/* set uniforms here */
-//	tLoc =  glGetUniformLocation(_warpShaderID,"in_DistortionOffset");
+//	tLoc =  glGetUniformLocation(_warpShaderID,"DistortionOffset");
 //	glUniform1f(tLoc,0.1453f);
 
 	glDrawArrays(GL_POINTS, 0, 1);
