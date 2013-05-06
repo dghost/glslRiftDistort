@@ -13,7 +13,7 @@ uniform vec2 ScaleIn = vec2(4.0,2.0);
 uniform vec2 Scale = vec2(0.25,0.5);
 
 
-void emitQuad(vec4 screen, vec4 coords, vec2 lCenter)
+void emitQuad(vec4 screen, vec4 coords)
 {
 /*
 	screen is a rect describing the screen space coordinates
@@ -26,19 +26,19 @@ void emitQuad(vec4 screen, vec4 coords, vec2 lCenter)
 		
 */
     gl_Position = vec4(screen.z, screen.w, 0.0, 1.0 );
-    _thetaCoords = (vec2( coords.z, coords.w)- lCenter) * ScaleIn;
+    _thetaCoords = vec2( coords.z, coords.w);
     EmitVertex();
 
     gl_Position = vec4(screen.x, screen.w, 0.0, 1.0 );
-    _thetaCoords = (vec2( coords.x, coords.w )- lCenter) * ScaleIn;
+    _thetaCoords = vec2( coords.x, coords.w );
     EmitVertex();
 
     gl_Position = vec4(screen.z,screen.y, 0.0, 1.0 );
-    _thetaCoords = (vec2( coords.z, coords.y )- lCenter) * ScaleIn;
+    _thetaCoords = vec2( coords.z, coords.y );
     EmitVertex();
 
     gl_Position = vec4(screen.x,screen.y, 0.0, 1.0 );
-    _thetaCoords = (vec2( coords.x, coords.y )- lCenter) * ScaleIn;
+    _thetaCoords = vec2( coords.x, coords.y );
     EmitVertex();
 	
     EndPrimitive();
@@ -51,5 +51,8 @@ void main()
     _sCenter = vec2(0.75,0.5);
     _lCenter = vec2(0.75 - DistortionOffset * 0.25, 0.5);
 	
-	emitQuad(vec4(0.0,-1.0,1.0,1.0),vec4(0.5,1.0,1.0,0.0),_lCenter);
+	vec2 bl = (vec2(0.5,1.0) - _lCenter) * ScaleIn;
+	vec2 ur = (vec2(1.0,0.0) - _lCenter) * ScaleIn;
+
+	emitQuad(vec4(0.0,-1.0,1.0,1.0),vec4(bl,ur));
 }
