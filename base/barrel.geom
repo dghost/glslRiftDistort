@@ -9,46 +9,39 @@ invariant out vec2 LensCenter;
 
 uniform float DistortionOffset = 0.151976;
 
+void emitQuad(vec4 screen, vec4 coords)
+{
+    gl_Position = vec4(screen.z, screen.w, 0.0, 1.0 );
+    TexCoords = vec2( coords.z, coords.w);
+    EmitVertex();
+
+    gl_Position = vec4(screen.x, screen.w, 0.0, 1.0 );
+    TexCoords = vec2( coords.x, coords.w );
+    EmitVertex();
+
+    gl_Position = vec4(screen.z,screen.y, 0.0, 1.0 );
+    TexCoords = vec2( coords.z, coords.y );
+    EmitVertex();
+
+    gl_Position = vec4(screen.x,screen.y, 0.0, 1.0 );
+    TexCoords = vec2( coords.x, coords.y );
+    EmitVertex();
+	
+    EndPrimitive();
+};
+
 void main()
 {
     ScreenCenter = vec2(0.25,0.5);
     LensCenter = vec2(0.25 + DistortionOffset * 0.25, 0.5);
+	
+	emitQuad(vec4(-1.0,-1.0,0.0,1.0),vec4(0.0,1.0,0.5,0.0));
 
-    gl_Position = vec4( 0.0, 1.0, 0.0, 1.0 );
-    TexCoords = vec2( 0.5, 0.0);
-    EmitVertex();
 
-    gl_Position = vec4(-1.0, 1.0, 0.0, 1.0 );
-    TexCoords = vec2( 0.0, 0.0 );
-    EmitVertex();
-
-    gl_Position = vec4( 0.0,-1.0, 0.0, 1.0 );
-    TexCoords = vec2( 0.5, 1.0 );
-    EmitVertex();
-
-    gl_Position = vec4(-1.0,-1.0, 0.0, 1.0 );
-    TexCoords = vec2( 0.0, 1.0 );
-    EmitVertex();
-
-    EndPrimitive();
     ScreenCenter = vec2(0.75,0.5);
     LensCenter = vec2(0.75 - DistortionOffset * 0.25, 0.5);
 	
-    gl_Position = vec4( 1.0, 1.0, 0.0, 1.0 );
-    TexCoords = vec2( 1.0, 0.0 );
-    EmitVertex();
+	emitQuad(vec4(0.0,-1.0,1.0,1.0),vec4(0.5,1.0,1.0,0.0));
 
-    gl_Position = vec4(0.0, 1.0, 0.0, 1.0 );
-    TexCoords = vec2( 0.5, 0.0 );
-    EmitVertex();
 
-    gl_Position = vec4( 1.0,-1.0, 0.0, 1.0 );
-    TexCoords = vec2( 1.0, 1.0 );
-    EmitVertex();
-
-    gl_Position = vec4(0.0,-1.0, 0.0, 1.0 );
-    TexCoords = vec2( 0.5, 1.0 );
-    EmitVertex();
-
-    EndPrimitive();
 }
