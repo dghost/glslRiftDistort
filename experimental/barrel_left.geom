@@ -43,15 +43,23 @@ void emitQuad(vec4 screen, vec4 coords)
     EndPrimitive();
 }
 
+// apply scaling factors and build a rectangle
+vec4 preScaleCoords(vec2 bl, vec2 ur, vec2 center)
+{
+	vec4 result;
+	result.xy = (bl  - center) * ScaleIn;
+	result.zw = (ur  - center) * ScaleIn;
+	return result;
+}
+
 void main()
 {
 	_scale = Scale;
-
+	
+	/* left eye */
     _sCenter = vec2(0.25,0.5);
     _lCenter = vec2(0.25 + DistortionOffset * 0.25, 0.5);
-	
-	vec2 bl = (vec2(0.0,1.0) - _lCenter) * ScaleIn;
-	vec2 ur = (vec2(0.5,0.0) - _lCenter) * ScaleIn;
+	vec4 texRect = preScaleCoords(vec2(0.0,1.0),vec2(0.5,0.0), _lCenter);
 
-	emitQuad(vec4(-1.0,-1.0,0.0,1.0),vec4(bl,ur));
+	emitQuad(vec4(-1.0,-1.0,0.0,1.0),texRect);
 }
