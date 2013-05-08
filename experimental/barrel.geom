@@ -3,14 +3,13 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 8) out;
 
-out vec2 _thetaCoords;
-invariant out vec2 _sCenter;
-invariant out vec2 _lCenter;
-invariant out vec2 _scale;
+out vec2 thetaCoords;
+invariant out vec2 ScreenCenter;
+invariant out vec2 LensCenter;
+
 
 uniform float DistortionOffset = 0.151976;
-uniform vec2 ScaleIn = vec2(4.0,2.0);
-uniform vec2 Scale = vec2(0.25,0.5);
+
 
 
 void emitQuad(vec4 screen, vec4 coords)
@@ -26,48 +25,46 @@ void emitQuad(vec4 screen, vec4 coords)
 		
 */
 	gl_Position = vec4(screen.z, screen.w, 0.0, 1.0 );
-	_thetaCoords = vec2( coords.z, coords.w);
+	thetaCoords = vec2( coords.z, coords.w);
 	EmitVertex();
 
 	gl_Position = vec4(screen.x, screen.w, 0.0, 1.0 );
-	_thetaCoords = vec2( coords.x, coords.w );
+	thetaCoords = vec2( coords.x, coords.w );
 	EmitVertex();
 
 	gl_Position = vec4(screen.z,screen.y, 0.0, 1.0 );
-	_thetaCoords = vec2( coords.z, coords.y );
+	thetaCoords = vec2( coords.z, coords.y );
 	EmitVertex();
 
 	gl_Position = vec4(screen.x,screen.y, 0.0, 1.0 );
-	_thetaCoords = vec2( coords.x, coords.y );
+	thetaCoords = vec2( coords.x, coords.y );
 	EmitVertex();
 	
 	EndPrimitive();
 }
 
 // apply scaling factors and build a rectangle
-vec4 preScaleCoords(vec2 bl, vec2 ur, vec2 center)
+vec4 preScaleCoords( vec2 center)
 {
 	vec4 result;
-	result.xy = (bl  - center) * ScaleIn;
-	result.zw = (ur  - center) * ScaleIn;
+	result.xy = (vec2(-1.0,1.0)  - center);
+	result.zw = (vec2(1.0,-1.0)  - center);
 	return result;
 }
 
 void main()
 {
-	_scale = Scale;
-
 	/* left eye */
-	_sCenter = vec2(0.25,0.5);
-	_lCenter = vec2(0.25 + DistortionOffset * 0.25, 0.5);
-	vec4 texRect = preScaleCoords(vec2(0.0,1.0),vec2(0.5,0.0), _lCenter);
+	ScreenCenter = vec2(0.25,0.5);
+	LensCenter = vec2(0.25 + DistortionOffset * 0.25, 0.5);
+	vec4 texRect = preScaleCoords(vec2(DistortionOffset,0.0));
 
 	emitQuad(vec4(-1.0,-1.0,0.0,1.0),texRect);
 
 	/* right eye */
-	_sCenter = vec2(0.75,0.5);
-	_lCenter = vec2(0.75 - DistortionOffset * 0.25, 0.5);
-	texRect = preScaleCoords(vec2(0.5,1.0),vec2(1.0,0.0), _lCenter);
+	ScreenCenter = vec2(0.75,0.5);
+	LensCenter = vec2(0.75 - DistortionOffset * 0.25, 0.5);
+	texRect = preScaleCoords(vec2(-DistortionOffset,0.0));
 
 	emitQuad(vec4(0.0,-1.0,1.0,1.0),texRect);
 
