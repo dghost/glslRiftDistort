@@ -1,14 +1,15 @@
 #version 150
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 4) out;
+layout(triangle_strip, max_vertices = 8) out;
 
-out vec2 thetaCoords;
-invariant out vec2 ScreenCenter;
-invariant out vec2 LensCenter;
-
+out vec2 _thetaCoords;
+invariant out vec4 _ScreenRect;
+invariant out vec2 _LensCenter;
+invariant out vec2 _Scale;
 
 uniform float DistortionOffset = 0.151976;
+uniform vec2 Scale = vec2(0.25,0.5);
 
 
 
@@ -25,26 +26,26 @@ void emitQuad(vec4 screen, vec4 coords)
 		
 */
 	gl_Position = vec4(screen.z, screen.w, 0.0, 1.0 );
-	thetaCoords = vec2( coords.z, coords.w);
+	_thetaCoords = vec2( coords.z, coords.w);
 	EmitVertex();
 
 	gl_Position = vec4(screen.x, screen.w, 0.0, 1.0 );
-	thetaCoords = vec2( coords.x, coords.w );
+	_thetaCoords = vec2( coords.x, coords.w );
 	EmitVertex();
 
 	gl_Position = vec4(screen.z,screen.y, 0.0, 1.0 );
-	thetaCoords = vec2( coords.z, coords.y );
+	_thetaCoords = vec2( coords.z, coords.y );
 	EmitVertex();
 
 	gl_Position = vec4(screen.x,screen.y, 0.0, 1.0 );
-	thetaCoords = vec2( coords.x, coords.y );
+	_thetaCoords = vec2( coords.x, coords.y );
 	EmitVertex();
 	
 	EndPrimitive();
 }
 
 // apply scaling factors and build a rectangle
-vec4 preScaleCoords( vec2 center)
+vec4 displacedRect( vec2 center)
 {
 	vec4 result;
 	result.xy = (vec2(-1.0,1.0)  - center);
@@ -52,13 +53,22 @@ vec4 preScaleCoords( vec2 center)
 	return result;
 }
 
+vec4 screenRect(vec2 center)
+{
+	vec4 result;
+	result.xy = center - vec2(0.25,0.5);
+	result.zw = center + vec2(0.25,0.5);
+	return result;
+}
+
 void main()
 {
-
+	_Scale = Scale;
+	
 	/* right eye */
-	ScreenCenter = vec2(0.75,0.5);
-	LensCenter = vec2(0.75 - DistortionOffset * 0.25, 0.5);
-	vec4 texRect = preScaleCoords(vec2(-DistortionOffset,0.0));
+	_ScreenRect = screenRect(vec2(0.75,0.5));
+	_LensCenter = vec2(0.75 - DistortionOffset * 0.25, 0.5);
+	vec4 texRect = displacedRect(vec2(-DistortionOffset,0.0));
 
 	emitQuad(vec4(0.0,-1.0,1.0,1.0),texRect);
 }

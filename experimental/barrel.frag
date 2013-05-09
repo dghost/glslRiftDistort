@@ -2,13 +2,12 @@
 
 uniform sampler2D Texture; //Image to be projected
 
-uniform vec2 Scale = vec2(0.25,0.5);
 uniform vec4 HmdWarpParam = vec4(1.0,0.22,0.24,0.0);
 
-invariant in vec2 ScreenCenter;
-invariant in vec2 LensCenter;
-
-in vec2 thetaCoords;
+invariant in vec4 _ScreenRect;
+invariant in vec2 _LensCenter;
+invariant in vec2 _Scale;
+in vec2 _thetaCoords;
 
 //layout(location = 0) out vec4 outColor; // GLSL 3.30 or higher only
 
@@ -21,16 +20,16 @@ vec2 HmdWarp(vec2 theta)
 		HmdWarpParam.z * rSq * rSq 
 		+ HmdWarpParam.w * rSq * rSq * rSq
 		);
-	return (LensCenter + Scale * rvector);
+	return (_LensCenter + _Scale * rvector);
 }
 
 
 void main(void)
 {
 	// scale the texture coordinates for better noise
-	vec2 tc = HmdWarp(thetaCoords);
+	vec2 tc = HmdWarp(_thetaCoords);
 	tc.y = 1.0 - tc.y;
-	if (!all(equal(clamp(tc, ScreenCenter-vec2(0.25,0.5), ScreenCenter+vec2(0.25,0.5)), tc)))
+	if (!all(equal(clamp(tc, _ScreenRect.xy, _ScreenRect.zw), tc)))
 	{
 		outColor = vec4(0.0);
 	} else {
