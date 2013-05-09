@@ -10,7 +10,7 @@ invariant out vec2 _Scale;
 
 uniform float DistortionOffset = 0.151976;
 uniform vec2 Scale = vec2(0.25,0.5);
-
+uniform float DistortionScale = 1.0;
 
 
 void emitQuad(vec4 screen, vec4 coords)
@@ -63,12 +63,13 @@ vec4 screenRect(vec2 center)
 
 void main()
 {
-	_Scale = Scale;
+	_Scale = Scale / DistortionScale;
+	vec4 texRect;
 	
 	/* right eye */
 	_ScreenRect = screenRect(vec2(0.75,0.5));
 	_LensCenter = vec2(0.75 - DistortionOffset * 0.25, 0.5);
-	vec4 texRect = displacedRect(vec2(-DistortionOffset,0.0));
+	texRect = displacedRect(vec2(-DistortionOffset,0.0));
 
 	emitQuad(vec4(0.0,-1.0,1.0,1.0),texRect);
 }
