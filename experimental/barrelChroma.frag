@@ -23,6 +23,7 @@ void main(void)
 	// Detect whether blue texture coordinates are out of range since these will scaled out the furthest.
 	vec2 thetaBlue = theta1 * (ChromAbParam.z + ChromAbParam.w * rSq);
 	vec2 tcBlue = _LensCenter + _Scale * thetaBlue;
+	tcBlue.y = 1 - tcBlue.y;
 	if (!all(equal(clamp(tcBlue, _ScreenRect.xy, _ScreenRect.zw), tcBlue)))
 	{
 		outColor = vec4(0);
@@ -30,7 +31,7 @@ void main(void)
 	}
 
 	// Now do blue texture lookup.
-	tcBlue.y = 1 - tcBlue.y;
+
 	float blue = texture2D(Texture, tcBlue).b;
 
 	// Do green lookup (no scaling).
