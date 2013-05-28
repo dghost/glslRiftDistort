@@ -16,34 +16,34 @@ void main(void)
 {
 	// scale the texture coordinates for better noise
 	vec2 theta = _thetaCoords;
-	       float rSq= theta.x * theta.x + theta.y * theta.y;
-       vec2  theta1 = theta * (HmdWarpParam.x + HmdWarpParam.y * rSq + 
-                      HmdWarpParam.z * rSq * rSq + HmdWarpParam.w * rSq * rSq * rSq);
-       
-       // Detect whether blue texture coordinates are out of range since these will scaled out the furthest.
-       vec2 thetaBlue = theta1 * (ChromAbParam.z + ChromAbParam.w * rSq);
-       vec2 tcBlue = _LensCenter + _Scale * thetaBlue;
-       if (!all(equal(clamp(tcBlue, _ScreenRect.xy, _ScreenRect.zw), tcBlue)))
-       {
-           outColor = vec4(0);
-           return;
-       }
-       
-       // Now do blue texture lookup.
-		tcBlue.y = 1 - tcBlue.y;
-       float blue = texture2D(Texture, tcBlue).b;
-       
-       // Do green lookup (no scaling).
-       vec2  tcGreen = _LensCenter + _Scale * theta1;
-		tcGreen.y = 1 - tcGreen.y;
+	float rSq= theta.x * theta.x + theta.y * theta.y;
+	vec2 theta1 = theta * (HmdWarpParam.x + HmdWarpParam.y * rSq +
+							HmdWarpParam.z * rSq * rSq + HmdWarpParam.w * rSq * rSq * rSq);
 
-       vec4  center = texture2D(Texture, tcGreen);
-       
-       // Do red scale and lookup.
-       vec2  thetaRed = theta1 * (ChromAbParam.x + ChromAbParam.y * rSq);
-       vec2  tcRed = _LensCenter + _Scale * thetaRed;
-	   tcRed.y = 1 - tcRed.y;
-       float red = texture2D(Texture, tcRed).r;
-       
-       outColor = vec4(red, center.g, blue, center.a);
+	// Detect whether blue texture coordinates are out of range since these will scaled out the furthest.
+	vec2 thetaBlue = theta1 * (ChromAbParam.z + ChromAbParam.w * rSq);
+	vec2 tcBlue = _LensCenter + _Scale * thetaBlue;
+	if (!all(equal(clamp(tcBlue, _ScreenRect.xy, _ScreenRect.zw), tcBlue)))
+	{
+		outColor = vec4(0);
+		return;
+	}
+
+	// Now do blue texture lookup.
+	tcBlue.y = 1 - tcBlue.y;
+	float blue = texture2D(Texture, tcBlue).b;
+
+	// Do green lookup (no scaling).
+	vec2  tcGreen = _LensCenter + _Scale * theta1;
+	tcGreen.y = 1 - tcGreen.y;
+
+	vec4  center = texture2D(Texture, tcGreen);
+
+	// Do red scale and lookup.
+	vec2  thetaRed = theta1 * (ChromAbParam.x + ChromAbParam.y * rSq);
+	vec2  tcRed = _LensCenter + _Scale * thetaRed;
+	tcRed.y = 1 - tcRed.y;
+	float red = texture2D(Texture, tcRed).r;
+
+	outColor = vec4(red, center.g, blue, center.a);
 }
