@@ -18,10 +18,11 @@ The shaders require OpenGL 3.2 / GLSL 1.50+. Earlier versions of OpenGL won't be
 In order for the shader to compile correctly it needs to have a vertex shader attached. I have included the file empty.shdr to be used for that purpose. It's really nothing special, but it's there if you need it.
 
 ####Uniforms
-- ScaleIn matches the variable ScaleIn referenced by the Rift SDK docs.
-- Scale matches the variable Scale referenced by the Rift SDK docs. If you want to apply a texture scaling value you should add it to this.
-- HmdWarpParam matches the variable HmdWarpParam referenced by the Rift SDK docs. It is equivalent to the DistortionK[] value.
-- DistortionOffset matches the viewport shift value that is mentioned in the Rift SDK.
+
+- `ScaleIn` matches the variable ScaleIn referenced by the Rift SDK docs.
+- `Scale` matches the variable Scale referenced by the Rift SDK docs.
+- `HmdWarpParam` matches the variable HmdWarpParam referenced by the Rift SDK docs.
+- `DistortionOffset` matches the viewport shift value that is mentioned in the Rift SDK.
 
 
 The geometry shader itself generates the LensCenter and ScreenCenter values. At a later date I might update this later to support setting center points for the lenses, or alternatively make a common geometry shader that can be used to draw both without rebinding shaders. Again, the point of this was largely to follow Rift SDK conventionswhile using modern OpenGL.
@@ -32,7 +33,7 @@ To use:
 
 - Bind the source texture to uniform location warpTexture.
 - Bind the output framebuffer.
-- Bind values to ScaleIn, Scale, HmdWarpParam, and DistortionOffset.
+- Bind values to `ScaleIn`, `Scale`, `HmdWarpParam`, and `DistortionOffset`.
 - Issue a command like glDrawArrays(GL_POINTS, 0, 1) with an empty VAO bound.
 
 Currently, the uniforms have default values that match the values for the Rift DK1, but you should still calculate these separately as they will likely change in future versions of the SDK. 
