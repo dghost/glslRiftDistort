@@ -38,7 +38,7 @@ void emitQuad(vec4 screen, vec4 coords)
 	EmitVertex();
 	
 	EndPrimitive();
-};
+}
 
 void main()
 {
