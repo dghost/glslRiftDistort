@@ -4,8 +4,6 @@ These shaders require OpenGL 2.0 / GLSL 1.10+, and are to be used with the mesh-
 
 For more information on how to use these please see the Oculus SDK Developer's Guide.
 
-There are two sets of shaders to choose from - uncorrected shaders and shaders that applie chromatic abberation correction. Given that the chromatic abberation is applied to the mesh itself now it requires both vertex + fragment shader support to function correctly.
-
 All shaders support the following features:
 
 * Automatic usage of texture2DLod when available
@@ -21,6 +19,8 @@ In order for luminance overdrive to function correctly it needs to be applied *a
 These shaders do not support multisample antialiasing. In order to support that correctly the various calls to texture2D* need to be updated to use texelFetch instead. Doing this in GLSL 1.10 is problematic for a variety of reasons.
 
 ####Files
+
+There are two sets of shaders to choose from - uncorrected shaders and shaders that applie chromatic abberation correction. Given that the chromatic abberation is applied to the mesh itself now it requires both vertex + fragment shader support to function correctly.
 
 #####Uncorrected Shaders
 | Shader |	Description
