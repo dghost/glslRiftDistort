@@ -23,15 +23,16 @@ These shaders do not support multisample antialiasing. In order to support that 
 There are two sets of shaders to choose from - uncorrected shaders and shaders that applie chromatic abberation correction. Given that the chromatic abberation is applied to the mesh itself now it requires both vertex + fragment shader support to function correctly.
 
 #####Uncorrected Shaders
-| Shader |	Description
-|-	|-	|
+
+| Shader |	Description |
+|--------|--------------|
 | `rift.vert` | The absolute bare minimum vertex shader necessary render to the screen. |
 | `rift_timewarp.vert` | Vertex shader that uses SDK provided timewarp values |
 | `rift.frag` | Bare minimum fragment shader w/o any additional processing |
 
 #####Chromatic Abberation Correction Shaders
-| Shader |	Description
-|-	|-	|
+| Shader |	Description |
+|--------|--------------|
 |`rift_chromatic.vert`	| Vertex shader that supports chromatic abberation correction without timewarp. |
 |`rift_chromatic_timewarp.vert`	| Vertex shader that supports both timewarp and chromatic abberation correction. |
 | `rift_chromatic.frag`	| Fragment shader that applies chromatic abberation correction. |
