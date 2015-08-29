@@ -4,10 +4,11 @@ Based on the basic version provided by Oculus VR, Inc. All copyright, etc. belon
 
 As always, no warranties are provided.
 
+*Note:* As of libovr 0.6 the distortion rendering is handled entirely by the compositing service, making the shaders in this repository entirely unnecessary. Do not expect to additional updates to support newer SDK versions.
 
 ###Directories
 
 | Directory		| Distortion	| Notes 
 |-----------	|--------------	|-------
-| libovr-0.4.x 	| Mesh 			| Works with current SDK
-| libovr-0.3.x	| Shader		| Deprecated
+| libovr-0.4.x 	| Mesh 			| Used for libovr 0.4 and 0.5
+| libovr-0.3.x	| Shader		| Used for libovr 0.3 and earlier
